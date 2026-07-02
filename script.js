@@ -17,6 +17,34 @@ navigation.querySelectorAll("a").forEach((link) => {
   });
 });
 
+const cleanPageUrl = () => {
+  if (window.location.hash) {
+    window.history.replaceState(null, document.title, `${window.location.pathname}${window.location.search}`);
+  }
+};
+
+document.querySelectorAll('a[href^="#"]').forEach((link) => {
+  link.addEventListener("click", (event) => {
+    const target = document.querySelector(link.getAttribute("href"));
+    if (!target) return;
+
+    event.preventDefault();
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    cleanPageUrl();
+  });
+});
+
+if (window.location.hash) {
+  window.history.scrollRestoration = "manual";
+  cleanPageUrl();
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+
+window.addEventListener("hashchange", () => {
+  cleanPageUrl();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
 document.querySelector("#year").textContent = new Date().getFullYear();
 
 document.body.classList.add("motion-ready");
